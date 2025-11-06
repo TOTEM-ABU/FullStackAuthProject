@@ -11,7 +11,6 @@ CREATE TABLE "User" (
     "phoneNumber" TEXT NOT NULL,
     "yearOfBirth" TIMESTAMP(3) NOT NULL,
     "role" "UserRoles" NOT NULL,
-    "avatar" TEXT NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT false,
     "refresh_token" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

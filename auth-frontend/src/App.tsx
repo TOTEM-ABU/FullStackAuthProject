@@ -10,6 +10,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import VerifyOtpPage from "./pages/VerifyOtpPage";
 import DashboardPage from "./pages/DashboardPage";
+import UpdatePasswordPage from "./pages/UpdatePasswordPage";
+import UpdateUserPage from "./pages/UpdateUserPage";
 
 const App: React.FC = () => {
   return (
@@ -31,6 +33,8 @@ const App: React.FC = () => {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/verify-otp" element={<VerifyOtpPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/update-password" element={<UpdatePasswordPage />} />
+            <Route path="/update-profile" element={<UpdateUserPage />} />
             <Route path="/" element={<Navigate to="/login" replace />} />
           </Routes>
         </div>

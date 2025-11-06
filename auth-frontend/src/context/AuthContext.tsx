@@ -13,11 +13,20 @@ import {
   type VerifyOtpData,
 } from "../api/auth";
 
+const getTokenFromCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
+  return null;
+};
+
 interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
+  yearOfBirth?: Date;
   role: string;
 }
 
@@ -25,6 +34,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
+  setUser: (user: User | null) => void;
   login: (data: LoginData) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   verifyOtp: (data: VerifyOtpData) => Promise<void>;
@@ -52,18 +62,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Check if user is authenticated on app load
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
-      // TODO: Verify token with backend and get user data
       setIsAuthenticated(true);
-      // For now, we'll just set a basic user object
       setUser({
         id: "1",
         email: "user@example.com",
         firstName: "User",
         lastName: "Example",
+        phoneNumber: "1234567890",
         role: "USER",
       });
     }
@@ -73,17 +81,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (data: LoginData) => {
     try {
       const response = await authApi.login(data);
-      localStorage.setItem("access_token", response.access_token);
-      localStorage.setItem("refresh_token", response.refresh_token);
 
-      // TODO: Get user data from token or make API call
-      setUser({
-        id: "1",
-        email: data.email,
-        firstName: "User",
-        lastName: "Example",
-        role: "USER",
-      });
+      const accessToken = getTokenFromCookie("access_token");
+      const refreshToken = getTokenFromCookie("refresh_token");
+
+      if (!accessToken) {
+        console.warn("Access token not found in cookies");
+      }
+
+      try {
+        const userProfile = await authApi.getProfile();
+        setUser({
+          id: userProfile.id,
+          email: userProfile.email,
+          firstName: userProfile.firstName,
+          lastName: userProfile.lastName,
+          phoneNumber: userProfile.phoneNumber,
+          yearOfBirth: userProfile.yearOfBirth,
+          role: userProfile.role,
+        });
+      } catch (profileError) {
+        console.error("Failed to fetch profile:", profileError);
+        setUser({
+          id: "1",
+          email: data.email,
+          firstName: "User",
+          lastName: "Example",
+          phoneNumber: "1234567890",
+          role: "USER",
+        });
+      }
       setIsAuthenticated(true);
     } catch (error) {
       throw error;
@@ -115,8 +142,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
+    document.cookie =
+      "access_token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+    document.cookie =
+      "refresh_token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -141,6 +174,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isAuthenticated,
     loading,
+    setUser,
     login,
     register,
     verifyOtp,

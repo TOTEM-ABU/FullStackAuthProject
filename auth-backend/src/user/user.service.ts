@@ -39,6 +39,16 @@ export class UserService {
     return user;
   }
 
+  async findUserById(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
+
+    return user;
+  }
+
   async findAllUser(query: any) {
     const {
       firstName,
@@ -252,22 +262,15 @@ export class UserService {
 
   async login(data: LoginUserDto, request: Request) {
     try {
-      const user = await this.prisma.user.findFirst({
-        where: { email: data.email },
-      });
+      const user = await this.findUser(data.email);
 
-      if (!user) {
-        throw new NotFoundException('User not found!');
-      }
+      const isPasswordValid = await bcrypt.compare(
+        data.password,
+        user.password,
+      );
 
-      if (!user.status) {
-        throw new BadRequestException('Please verify your email first!');
-      }
-
-      const match = await bcrypt.compare(data.password, user.password);
-
-      if (!match) {
-        throw new BadRequestException('Wrong credentials!');
+      if (!isPasswordValid) {
+        throw new BadRequestException('Invalid password!');
       }
 
       const payload = { id: user.id, role: user.role };
@@ -282,19 +285,32 @@ export class UserService {
         expiresIn: '7d',
       });
 
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7);
-
       await this.prisma.user.update({
         where: { id: user.id },
-        data: { refresh_token: refresh_token },
+        data: { refresh_token },
       });
 
-      await this.mailer.sendMail(
-        data.email,
-        'Logged in',
-        'You have successfully logged in ✅',
-      );
+      // Set cookies
+      const response = request.res;
+      if (response) {
+        response.cookie('access_token', access_token, {
+          httpOnly: false,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 15 * 60 * 1000,
+          domain: 'localhost',
+          path: '/',
+        });
+
+        response.cookie('refresh_token', refresh_token, {
+          httpOnly: false,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+          domain: 'localhost',
+          path: '/',
+        });
+      }
 
       return { access_token, refresh_token };
     } catch (error) {
@@ -307,9 +323,14 @@ export class UserService {
 
   async updatePassword(userId: string, dto: UpdatePasswordDto) {
     try {
+      console.log('updatePassword - userId:', userId);
+      console.log('updatePassword - dto:', dto);
+
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
       });
+
+      console.log('updatePassword - user found:', !!user);
 
       if (!user) throw new NotFoundException('User not found!');
 
@@ -322,6 +343,7 @@ export class UserService {
 
       return { message: 'Password updated successfully!' };
     } catch (error) {
+      console.error('updatePassword - Error:', error);
       if (error instanceof HttpException) {
         throw error;
       }

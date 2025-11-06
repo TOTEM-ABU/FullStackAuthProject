@@ -85,7 +85,6 @@ const DashboardPage: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      {/* Animated background elements */}
       <div
         style={{
           position: "absolute",
@@ -101,7 +100,6 @@ const DashboardPage: React.FC = () => {
         }}
       />
 
-      {/* Header */}
       <header
         style={{
           background: "rgba(255, 255, 255, 0.95)",
@@ -181,7 +179,6 @@ const DashboardPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main
         style={{
           padding: "40px",
@@ -195,7 +192,6 @@ const DashboardPage: React.FC = () => {
             margin: "0 auto",
           }}
         >
-          {/* Welcome Section */}
           <div
             style={{
               background: "rgba(255, 255, 255, 0.95)",
@@ -261,7 +257,6 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* User Info Cards */}
           <div
             style={{
               display: "grid",
@@ -270,7 +265,6 @@ const DashboardPage: React.FC = () => {
               marginBottom: "40px",
             }}
           >
-            {/* Personal Info Card */}
             <div
               style={{
                 background: "rgba(255, 255, 255, 0.95)",
@@ -363,7 +357,7 @@ const DashboardPage: React.FC = () => {
                     Phone:
                   </span>
                   <span style={{ color: "#2d3748", fontWeight: "600" }}>
-                    {user.phoneNumber}
+                    {user.phoneNumber || "Not provided"}
                   </span>
                 </div>
                 <div
@@ -392,7 +386,6 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Account Status Card */}
             <div
               style={{
                 background: "rgba(255, 255, 255, 0.95)",
@@ -490,7 +483,6 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick Actions */}
           <div
             style={{
               background: "rgba(255, 255, 255, 0.95)",
@@ -520,6 +512,7 @@ const DashboardPage: React.FC = () => {
               }}
             >
               <button
+                onClick={() => navigate("/update-profile")}
                 style={{
                   background: "linear-gradient(135deg, #667eea, #764ba2)",
                   color: "white",
@@ -541,6 +534,7 @@ const DashboardPage: React.FC = () => {
               </button>
 
               <button
+                onClick={() => navigate("/update-password")}
                 style={{
                   background: "linear-gradient(135deg, #27ae60, #2ecc71)",
                   color: "white",
