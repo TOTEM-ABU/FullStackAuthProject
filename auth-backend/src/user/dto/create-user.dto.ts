@@ -1,13 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserRoles } from '@prisma/client';
+import { UserRoles } from '../../generated/prisma/enums';
 import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
   IsPhoneNumber,
   IsString,
-  IsUrl,
-  IsUUID,
   Length,
 } from 'class-validator';
 

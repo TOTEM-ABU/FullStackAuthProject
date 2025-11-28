@@ -5,11 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRoles } from '@prisma/client';
+import { UserRoles } from '../../../generated/prisma/enums';
 import { ROLES_KEY } from 'src/tools/decorators/roles.decorators';
 
 @Injectable()
-export class RoleGuard implements CanActivate {
+class RoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
@@ -38,3 +38,5 @@ export class RoleGuard implements CanActivate {
     );
   }
 }
+
+export default RoleGuard;

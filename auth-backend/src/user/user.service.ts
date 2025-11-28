@@ -7,19 +7,18 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/tools/prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { MailService } from 'src/tools/mail/mail.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Request } from 'express';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from './dto/create-user.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { Request } from 'express';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { MailService, PrismaService } from '../tools';
 
 @Injectable()
 export class UserService {

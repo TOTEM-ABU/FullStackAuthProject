@@ -10,19 +10,19 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
+import { Request } from 'express';
+import { ApiQuery } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { Request } from 'express';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiQuery } from '@nestjs/swagger';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { AuthGuard } from 'src/tools/guards/auth/auth.guard';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { UserRoles } from '@prisma/client';
+import { UserRoles } from '../generated/prisma/enums';
+import { AuthGuard } from '../tools';
 
 @Controller('users')
 export class UserController {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
-export class MailService {
+class MailService {
   private transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -24,3 +24,5 @@ export class MailService {
     }
   }
 }
+
+export default MailService;

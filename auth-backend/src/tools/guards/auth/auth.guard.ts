@@ -8,12 +8,11 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+class AuthGuard implements CanActivate {
   constructor(private readonly jwt: JwtService) {}
   canActivate(context: ExecutionContext): boolean {
     let request: Request = context.switchToHttp().getRequest();
 
-    // Try to get token from cookies first, then from headers
     let token =
       request.cookies?.access_token ||
       request.headers.authorization?.split(' ')[1];
@@ -38,3 +37,5 @@ export class AuthGuard implements CanActivate {
     }
   }
 }
+
+export default AuthGuard;

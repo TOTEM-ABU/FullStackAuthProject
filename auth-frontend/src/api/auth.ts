@@ -152,7 +152,7 @@ export const authApi = {
   },
 
   refreshToken: async (
-    data: RefreshTokenData
+    data: RefreshTokenData,
   ): Promise<{ access_token: string }> => {
     const response = await fetch(`${API_URL}/users/refresh-token`, {
       method: "POST",

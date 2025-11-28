@@ -1,10 +1,10 @@
+import { JwtModule } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { JwtModule } from '@nestjs/jwt';
-import { MailModule } from 'src/tools/mail/mail.module';
-import { PrismaModule } from 'src/tools/prisma/prisma.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PrismaModule } from '../tools/prisma/prisma.module';
+import { MailModule } from '../tools/mail/mail.module';
 
 @Module({
   imports: [

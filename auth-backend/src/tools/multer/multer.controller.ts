@@ -10,7 +10,7 @@ import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 
 @Controller('file')
-export class MulterController {
+class MulterController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -42,3 +42,5 @@ export class MulterController {
     return { url: file.filename };
   }
 }
+
+export default MulterController;
